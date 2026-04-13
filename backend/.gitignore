@@ -1,0 +1,27 @@
+# --- Python Virtual Environment ---
+# This is the most important one! Never upload your venv.
+venv/
+.venv/
+env/
+
+# --- Python Cache ---
+# These are compiled files created by Python to run faster.
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# --- Environment Variables (Secrets) ---
+# Never upload your API keys, database passwords, or tokens.
+.env
+.env.local
+
+# --- IDE Specific ---
+# VS Code settings
+.vscode/
+# PyCharm settings
+.idea/
+
+# --- Operating System Files ---
+.DS_Store
+Thumbs.db
