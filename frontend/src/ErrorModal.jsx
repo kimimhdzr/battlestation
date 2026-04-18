@@ -8,7 +8,6 @@ const ErrorModal = ({ message, onClose }) => {
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
             <div className="w-full max-w-md bg-[#bcbcbc] border-[4px] border-white outline outline-[4px] outline-black p-1 shadow-[8px_8px_0_rgba(0,0,0,0.5)]">
 
-                {/* Modal Header (Classic Windows Style) */}
                 <div className="bg-[#000080] text-white flex justify-between items-center p-2 mb-4">
                     <span className="text-[10px] flex items-center gap-2 font-['Press_Start_2P']">
                         <AlertTriangle size={12} /> SYSTEM ALERT

@@ -1,10 +1,12 @@
 import React, { useState, useRef } from 'react';
 import { Upload, Scan, RotateCcw, FolderOpen } from 'lucide-react';
 import ErrorModal from './ErrorModal';
+import LoadingBar from './LoadingBar';
 
 const BattlestationRater = () => {
     const [file, setFile] = useState(null);
     const [preview, setPreview] = useState(null);
+    const [isScanning, setIsScanning] = useState(false);
     const [result, setResult] = useState(null);
     const [isDragging, setIsDragging] = useState(false);
     const [error, setError] = useState(null);
@@ -31,13 +33,14 @@ const BattlestationRater = () => {
         e.preventDefault();
         if (!file) return;
 
-        // 1. Prepare the data
+        setResult(null);
+        // setIsScanning(true);
+
+        // // 1. Prepare the data
         const formData = new FormData();
-        formData.append('image', file); // 'image' is the key Python will look for
+        formData.append('image', file); 
 
         try {
-            // 2. Send request to Python server
-            // Replace 5000 with 8000 if your friend is using FastAPI
             const response = await fetch('http://localhost:5000/scan', {
                 method: 'POST',
                 body: formData,
@@ -47,16 +50,26 @@ const BattlestationRater = () => {
 
             const data = await response.json();
 
-            // 3. Update the UI with real data from Python
             setResult({
                 score: data.score,
                 status: data.status,
-                image: preview // Keeps the local preview for speed
+                image: preview
             });
         } catch (error) {
             console.error("Connection failed:", error);
             setError(`CRITICAL ERROR:\nSCANNER OFFLINE.\nCHECK PYTHON BACKEND.`);
         }
+
+        // --- PROTOTYPE MOCK LOGIC ---
+        // Simulates a 1.5 second "scanning" delay
+        // setTimeout(() => {
+        //     setIsScanning(false);
+        //     setResult({
+        //         score: Math.floor(Math.random() * 41) + 60,
+        //         status: "LEGENDARY SETUP DETECTED",
+        //         image: preview
+        //     });
+        // }, 2500);
     };
 
 
@@ -64,12 +77,12 @@ const BattlestationRater = () => {
         setFile(null);
         setPreview(null);
         setResult(null);
+        setIsScanning(false);
     };
 
     return (
         <div className="min-h-screen bg-[#1a1a1a] text-[#eee] font-mono p-10 flex flex-col items-center">
 
-            {/* Google Font link would usually go in your index.html or layout */}
             <style>{`@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');`}</style>
 
             {/* The External Modal */}
@@ -122,18 +135,24 @@ const BattlestationRater = () => {
                                 )}
                             </div>
 
-                            <button
-                                type="submit"
-                                disabled={!file}
-                                className="w-full mt-4 bg-[#3e802a] text-white p-4 border-4 border-black shadow-[inset_-4px_-4px_#2a5a1c,inset_4px_4px_#56ab3a] active:translate-y-1 active:shadow-none transition-transform disabled:opacity-50 disabled:cursor-not-allowed text-[11px] flex items-center justify-center gap-2"
-                            >
-                                <Scan size={16} /> SCAN SETUP
-                            </button>
-                        </form>
+                            {!isScanning ? (
+                                <button
+                                    type="submit"
+                                    disabled={!file}
+                                    className="w-full mt-4 bg-[#3e802a] text-white p-4 border-4 border-black shadow-[inset_-4px_-4px_#2a5a1c,inset_4px_4px_#56ab3a] active:translate-y-1 active:shadow-none transition-transform disabled:opacity-50 disabled:cursor-not-allowed text-[11px] flex items-center justify-center gap-2"
+                                >
+                                    <Scan size={16} /> SCAN SETUP
+                                </button>
+                            ) : (
+                                <div className="mt-4 p-4 border-4 border-[#444] bg-[#222]">
+                                    <LoadingBar />
+                                </div>
+                            )}
+                            </form>
                     </div>
 
                     {/* Right Side: Result */}
-                    {result && (
+                    {result && !isScanning &&(
                         <div className="w-full lg:flex-1 bg-[#111] border-4 border-dashed border-[#ffcc00] p-6 animate-in fade-in slide-in-from-bottom-4">
                             <span className="text-[10px] text-[#888]">ANALYSIS COMPLETE:</span>
                             <h2 className="text-2xl text-[#00ff00] my-3">SCORE: {result.score}/100</h2>
@@ -144,7 +163,6 @@ const BattlestationRater = () => {
                                     src={result.image}
                                     alt="Scanned"
                                     className="w-full h-auto object-contain image-pixelated border-4 border-[#222]"
-                                // style={{ imageRendering: 'pixelated' }}
                                 />
                             </div>
 
