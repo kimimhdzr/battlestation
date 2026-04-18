@@ -1,0 +1,25 @@
+@import "tailwindcss";
+
+@theme {
+  /* This replaces the old tailwind.config.js 'extend' section */
+  --font-pixel: "Press Start 2P", system-ui;
+
+  /* Adding your custom retro colors */
+  --color-retro-yellow: #ffcc00;
+  --color-retro-green: #3e802a;
+  --color-retro-red: #ff0055;
+}
+
+/* Import the Google Font */
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+
+/* Your custom utility for that 8-bit button look */
+@utility pixel-border {
+  border: 4px solid #000;
+  box-shadow: inset -4px -4px rgba(0, 0, 0, 0.2), inset 4px 4px rgba(255, 255, 255, 0.1);
+}
+
+body {
+  margin: 0;
+  background-color: #1a1a1a;
+}
