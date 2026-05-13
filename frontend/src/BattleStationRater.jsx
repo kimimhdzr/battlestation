@@ -34,42 +34,42 @@ const BattlestationRater = () => {
         if (!file) return;
 
         setResult(null);
-        // setIsScanning(true);
+        setIsScanning(true);
 
         // // 1. Prepare the data
-        const formData = new FormData();
-        formData.append('image', file); 
+        // const formData = new FormData();
+        // formData.append('image', file); 
 
-        try {
-            const response = await fetch('http://localhost:5000/scan', {
-                method: 'POST',
-                body: formData,
-            });
+        // try {
+        //     const response = await fetch('http://localhost:5000/scan', {
+        //         method: 'POST',
+        //         body: formData,
+        //     });
 
-            if (!response.ok) throw new Error('Backend error');
+        //     if (!response.ok) throw new Error('Backend error');
 
-            const data = await response.json();
+        //     const data = await response.json();
 
-            setResult({
-                score: data.score,
-                status: data.status,
-                image: preview
-            });
-        } catch (error) {
-            console.error("Connection failed:", error);
-            setError(`CRITICAL ERROR:\nSCANNER OFFLINE.\nCHECK PYTHON BACKEND.`);
-        }
+        //     setResult({
+        //         score: data.score,
+        //         status: data.status,
+        //         image: preview
+        //     });
+        // } catch (error) {
+        //     console.error("Connection failed:", error);
+        //     setError(`CRITICAL ERROR:\nSCANNER OFFLINE.\nCHECK PYTHON BACKEND.`);
+        // }
 
         // --- PROTOTYPE MOCK LOGIC ---
         // Simulates a 1.5 second "scanning" delay
-        // setTimeout(() => {
-        //     setIsScanning(false);
-        //     setResult({
-        //         score: Math.floor(Math.random() * 41) + 60,
-        //         status: "LEGENDARY SETUP DETECTED",
-        //         image: preview
-        //     });
-        // }, 2500);
+        setTimeout(() => {
+            setIsScanning(false);
+            setResult({
+                score: Math.floor(Math.random() * 41) + 60,
+                status: "LEGENDARY SETUP DETECTED",
+                image: preview
+            });
+        }, 2500);
     };
 
 
@@ -139,7 +139,7 @@ const BattlestationRater = () => {
                                 <button
                                     type="submit"
                                     disabled={!file}
-                                    className="w-full mt-4 bg-[#3e802a] text-white p-4 border-4 border-black shadow-[inset_-4px_-4px_#2a5a1c,inset_4px_4px_#56ab3a] active:translate-y-1 active:shadow-none transition-transform disabled:opacity-50 disabled:cursor-not-allowed text-[11px] flex items-center justify-center gap-2"
+                                    className="w-full mt-4 bg-[#3e802a] text-white p-4 border-4 border-black shadow-[inset_-4px_-4px_#2a5a1c,inset_4px_4px_#56ab3a] active:translate-y-1 active:shadow-none transition-transform cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed text-[11px] flex items-center justify-center gap-2"
                                 >
                                     <Scan size={16} /> SCAN SETUP
                                 </button>
@@ -168,7 +168,7 @@ const BattlestationRater = () => {
 
                             <button
                                 onClick={reset}
-                                className="bg-[#ff0055] text-white py-3 px-6 border-4 border-black shadow-[inset_-4px_-4px_#aa0033,inset_4px_4px_#ff3366] active:translate-y-1 active:shadow-none text-[11px] flex items-center gap-2"
+                                className="bg-[#ff0055] text-white py-3 px-6 border-4 border-black shadow-[inset_-4px_-4px_#aa0033,inset_4px_4px_#ff3366] cursor-pointer active:translate-y-1 active:shadow-none text-[11px] flex items-center gap-2"
                             >
                                 <RotateCcw size={14} /> RESET
                             </button>

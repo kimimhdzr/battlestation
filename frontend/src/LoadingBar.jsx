@@ -19,7 +19,7 @@ const LoadingBar = ({ onComplete }) => {
     }, [onComplete]);
 
     return (
-        <div className="w-full space-y-4 animate-pulse">
+        <div className="w-full space-y-4 animate-pulse cursor-wait">
             <div className="flex justify-between text-[10px] text-[#ffcc00]">
                 <span>SYSTEM_SCANNING...</span>
                 <span>{progress}%</span>
