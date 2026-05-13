@@ -1,38 +1,47 @@
-from fastapi import FastAPI
-from app.core.config import settings
+from fastapi import FastAPI, UploadFile, File, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
+from app.utils.detector import get_image_rating
+import shutil
+import os
 
-# Initialize the FastAPI app
-app = FastAPI(title=settings.APP_NAME)
+app = FastAPI()
 
-@app.get("/")
-def read_root():
-    """
-    The landing page of your API.
-    """
-    return {
-        "status": "online",
-        "message": "Welcome to the Battlestation Backend",
-        "version": "1.0.0"
-    }
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Adjust this in production
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
-@app.get("/status")
-def get_health():
-    return {"health": "OK"}
+# Create a temp folder for uploads if it doesn't exist
+UPLOAD_DIR = "temp_uploads"
+os.makedirs(UPLOAD_DIR, exist_ok=True)
 
-@app.get("/users/{user_id}")
-def read_user(user_id: int, include_details: bool = False):
-    """
-    An example of a path parameter (user_id) 
-    and a query parameter (include_details).
-    """
-    user_data = {"user_id": user_id}
-    if include_details:
-        user_data.update({"role": "Commander", "level": 99})
-    return user_data
+@app.post("/api/rate-my-setup")
+async def rate_setup(file: UploadFile = File(...)):
+    # 1. Validation: Ensure it's an image
+    if not file.content_type.startswith("image/"):
+        raise HTTPException(status_code=400, detail="File must be an image")
 
-@app.get("/info")
-def get_info():
-    return {
-        "app_name": settings.APP_NAME,
-        "debug_status": settings.DEBUG_MODE
-    }
+    # 2. Save the file temporarily
+    file_path = os.path.join(UPLOAD_DIR, file.filename)
+    with open(file_path, "wb") as buffer:
+        shutil.copyfileobj(file.file, buffer)
+
+    try:
+        # 3. Run the Detection and Rating logic
+        result = get_image_rating(file_path)
+        
+        # 4. (Optional) Delete file after processing to save space
+        os.remove(file_path)
+        
+        return result
+
+    except Exception as e:
+        if os.path.exists(file_path): os.remove(file_path)
+        raise HTTPException(status_code=500, detail=str(e))
+
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run(app, host="0.0.0.0", port=8000)
