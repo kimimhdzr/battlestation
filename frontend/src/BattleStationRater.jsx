@@ -2,6 +2,7 @@ import React, { useState, useRef } from "react";
 import { Upload, Scan, RotateCcw, FolderOpen } from "lucide-react";
 import ErrorModal from "./ErrorModal";
 import LoadingBar from "./LoadingBar";
+import ChatBot from "./ChatBot";
 
 const BattlestationRater = () => {
   const [file, setFile] = useState(null);
@@ -213,6 +214,8 @@ const BattlestationRater = () => {
           )}
         </div>
       </div>
+
+      <ChatBot detectionResult={result} />
     </div>
   );
 };
