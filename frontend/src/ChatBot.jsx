@@ -115,8 +115,16 @@ const ChatBot = ({ detectionResult }) => {
 
   return (
     <div
-      className="fixed bottom-6 right-6 w-[400px] flex flex-col bg-[#222] border-4 border-[#ffcc00] shadow-[0_8px_0_rgba(0,0,0,0.5)]"
-      style={{ fontFamily: "'Press Start 2P', monospace", maxHeight: "600px" }}
+      className="flex flex-col bg-[#222] border-4 border-[#ffcc00] shadow-[0_8px_0_rgba(0,0,0,0.5)]"
+      style={{
+        position: "fixed",
+        top: "24px",
+        right: "24px",
+        bottom: "24px",
+        fontFamily: "'Press Start 2P', monospace",
+        width: "min(640px, calc(100vw - 48px))",
+        zIndex: 50,
+      }}
     >
       {/* Title bar */}
       <div className="flex items-center justify-between bg-[#1a1a1a] px-4 py-3 border-b-4 border-[#ffcc00]">
@@ -139,9 +147,9 @@ const ChatBot = ({ detectionResult }) => {
       </div>
 
       {/* Messages */}
-      <div className="flex-1 overflow-y-auto p-4 space-y-3" style={{ minHeight: "200px", maxHeight: "340px" }}>
+      <div className="flex-1 min-h-0 overflow-y-auto p-5 space-y-4">
         {messages.length === 0 && !isStreaming && (
-          <p className="text-[#555] text-[8px] leading-relaxed text-center mt-4">
+          <p className="text-[#555] text-[9px] leading-relaxed text-center mt-4">
             {detectionResult
               ? "SETUP SCANNED. ASK ME ANYTHING ABOUT YOUR RIG."
               : "SCAN YOUR SETUP FIRST OR ASK ME ANYTHING."}
@@ -154,7 +162,7 @@ const ChatBot = ({ detectionResult }) => {
             className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}
           >
             <div
-              className={`max-w-[80%] px-3 py-2 text-[8px] leading-relaxed ${
+              className={`max-w-[82%] px-4 py-3 text-[9px] leading-relaxed ${
                 msg.role === "user"
                   ? "bg-[#3e802a] text-white border-2 border-black"
                   : "bg-[#111] text-[#00ff00] border-2 border-[#333]"
@@ -167,7 +175,7 @@ const ChatBot = ({ detectionResult }) => {
 
         {streamingContent && (
           <div className="flex justify-start">
-            <div className="max-w-[80%] px-3 py-2 text-[8px] leading-relaxed bg-[#111] text-[#00ff00] border-2 border-[#333]">
+            <div className="max-w-[82%] px-4 py-3 text-[9px] leading-relaxed bg-[#111] text-[#00ff00] border-2 border-[#333]">
               {streamingContent}
               <span className="animate-pulse">▮</span>
             </div>
@@ -187,13 +195,13 @@ const ChatBot = ({ detectionResult }) => {
           onKeyDown={handleKeyDown}
           disabled={isStreaming}
           placeholder="TYPE MESSAGE..."
-          className="flex-1 bg-[#111] border-2 border-[#444] text-[#eee] text-[8px] px-2 py-2 resize-none focus:outline-none focus:border-[#ffcc00] disabled:opacity-50 placeholder-[#444]"
+          className="flex-1 bg-[#111] border-2 border-[#444] text-[#eee] text-[9px] px-3 py-2 resize-none focus:outline-none focus:border-[#ffcc00] disabled:opacity-50 placeholder-[#444]"
           style={{ fontFamily: "'Press Start 2P', monospace", maxHeight: "120px", overflowY: "auto" }}
         />
         <button
           onClick={sendMessage}
           disabled={isStreaming || !input.trim()}
-          className="bg-[#ffcc00] text-black px-3 py-2 border-2 border-black text-[8px] shadow-[inset_-2px_-2px_#aa8800,inset_2px_2px_#ffee55] active:translate-y-px active:shadow-none disabled:opacity-40 disabled:cursor-not-allowed whitespace-nowrap"
+          className="bg-[#ffcc00] text-black px-4 py-2 border-2 border-black text-[9px] shadow-[inset_-2px_-2px_#aa8800,inset_2px_2px_#ffee55] active:translate-y-px active:shadow-none disabled:opacity-40 disabled:cursor-not-allowed whitespace-nowrap"
         >
           {isStreaming ? "..." : "SEND"}
         </button>
