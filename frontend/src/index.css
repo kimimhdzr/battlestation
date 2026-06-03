@@ -1,25 +1,185 @@
+@import url("https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap");
 @import "tailwindcss";
 
 @theme {
-  /* This replaces the old tailwind.config.js 'extend' section */
   --font-pixel: "Press Start 2P", system-ui;
-
-  /* Adding your custom retro colors */
-  --color-retro-yellow: #ffcc00;
-  --color-retro-green: #3e802a;
-  --color-retro-red: #ff0055;
 }
 
-/* Import the Google Font */
-@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
-
-/* Your custom utility for that 8-bit button look */
-@utility pixel-border {
-  border: 4px solid #000;
-  box-shadow: inset -4px -4px rgba(0, 0, 0, 0.2), inset 4px 4px rgba(255, 255, 255, 0.1);
+html {
+  scroll-behavior: smooth;
 }
 
 body {
   margin: 0;
-  background-color: #1a1a1a;
+  background: #08080d;
+}
+
+@layer utilities {
+  .bg-noise {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.75' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)' opacity='.7'/%3E%3C/svg%3E");
+  }
+
+  .bg-scanlines {
+    background: repeating-linear-gradient(
+      0deg,
+      rgba(255, 255, 255, 0.08) 0,
+      rgba(255, 255, 255, 0.08) 1px,
+      transparent 2px,
+      transparent 7px
+    );
+  }
+
+  .bg-grid {
+    background-image: linear-gradient(rgba(255, 204, 0, 0.13) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255, 204, 0, 0.13) 1px, transparent 1px);
+    background-size: 76px 76px;
+    mask-image: radial-gradient(circle at 50% 25%, #000 0 35%, transparent 72%);
+    animation: gridMove 16s linear infinite;
+  }
+
+  .reveal {
+    opacity: 0;
+    transform: translateY(18px);
+    transition: opacity 700ms ease, transform 700ms ease;
+  }
+
+  .reveal.is-inview {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .marquee {
+    display: inline-block;
+    white-space: nowrap;
+    padding-left: 100%;
+    animation: marquee 18s linear infinite;
+  }
+}
+
+@keyframes marquee {
+  to {
+    transform: translateX(-100%);
+  }
+}
+
+@keyframes gridMove {
+  to {
+    background-position: 76px 76px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bg-grid,
+  .marquee {
+    animation: none !important;
+  }
+
+  .reveal {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
+}
+
+@import url("https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html,
+body,
+#root {
+  margin: 0;
+  padding: 0;
+  min-height: 100%;
+}
+
+body {
+  background: #1a1a1a;
+  color: #eeeeee;
+  font-family: "Press Start 2P", monospace;
+  image-rendering: pixelated;
+}
+
+/* CRT scanline effect */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+
+  background: repeating-linear-gradient(to bottom,
+      rgba(255, 255, 255, 0.03) 0px,
+      rgba(255, 255, 255, 0.03) 1px,
+      transparent 2px,
+      transparent 4px);
+
+  opacity: 0.25;
+  z-index: 9999;
+}
+
+/* subtle flicker */
+@keyframes flicker {
+  0% {
+    opacity: 0.97;
+  }
+
+  50% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0.98;
+  }
+}
+
+body {
+  animation: flicker 0.15s infinite;
+}
+
+/* pixel scrollbar */
+::-webkit-scrollbar {
+  width: 12px;
+}
+
+::-webkit-scrollbar-track {
+  background: #222;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #ffcc00;
+  border: 2px solid #000;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #ffe066;
+}
+
+.image-pixelated {
+  image-rendering: pixelated;
+}
+
+.pixel-panel {
+  background: #222;
+  border: 4px solid #444;
+  box-shadow: 6px 6px 0 #000;
+}
+
+.pixel-button-green {
+  background: #3e802a;
+  border: 4px solid #000;
+  color: white;
+}
+
+.pixel-button-grey {
+  background: #555;
+  border: 4px solid #000;
+  color: white;
+}
+
+.pixel-button-red {
+  background: #ff0055;
+  border: 4px solid #000;
+  color: white;
 }
