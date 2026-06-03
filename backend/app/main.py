@@ -16,6 +16,7 @@ class ChatMessage(BaseModel):
 class ChatRequest(BaseModel):
     messages: list[ChatMessage]
     detection_context: Optional[dict] = None
+    image_url: Optional[str] = None
 
 app = FastAPI()
 
@@ -63,7 +64,7 @@ async def chat(request: ChatRequest):
     messages_payload = [{"role": m.role, "content": m.content} for m in request.messages]
 
     return StreamingResponse(
-        stream_chat(system_prompt, messages_payload),
+        stream_chat(system_prompt, messages_payload, request.image_url),
         media_type="text/event-stream",
         headers={"Cache-Control": "no-cache", "X-Accel-Buffering": "no"},
     )

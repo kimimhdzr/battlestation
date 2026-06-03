@@ -20,6 +20,20 @@ const ChatBot = ({ detectionResult }) => {
     ta.style.height = `${ta.scrollHeight}px`;
   }, [input]);
 
+  const resizeImage = (dataUrl, maxSize = 768) =>
+    new Promise((resolve) => {
+      const img = new Image();
+      img.onload = () => {
+        const scale = Math.min(maxSize / img.width, maxSize / img.height, 1);
+        const canvas = document.createElement("canvas");
+        canvas.width = Math.round(img.width * scale);
+        canvas.height = Math.round(img.height * scale);
+        canvas.getContext("2d").drawImage(img, 0, 0, canvas.width, canvas.height);
+        resolve(canvas.toDataURL("image/jpeg", 0.8));
+      };
+      img.src = dataUrl;
+    });
+
   const sendMessage = async () => {
     if (!input.trim() || isStreaming) return;
 
@@ -38,6 +52,12 @@ const ChatBot = ({ detectionResult }) => {
         }
       : null;
 
+    // Only send the image on the first message to avoid re-paying vision cost each turn
+    const imageUrl =
+      messages.length === 0 && detectionResult?.image
+        ? await resizeImage(detectionResult.image)
+        : null;
+
     try {
       const response = await fetch("http://127.0.0.1:8000/api/chat", {
         method: "POST",
@@ -45,6 +65,7 @@ const ChatBot = ({ detectionResult }) => {
         body: JSON.stringify({
           messages: updatedMessages,
           detection_context: contextForApi,
+          image_url: imageUrl,
         }),
       });
 

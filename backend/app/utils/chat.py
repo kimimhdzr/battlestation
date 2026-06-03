@@ -6,7 +6,7 @@ client = OpenAI(
     api_key=settings.OPENROUTER_API_KEY,
 )
 
-MODEL = "openai/gpt-oss-120b:free"
+MODEL = "google/gemini-2.5-flash-lite"
 
 
 def build_system_prompt(detection_context: dict | None) -> str:
@@ -32,6 +32,15 @@ def build_system_prompt(detection_context: dict | None) -> str:
     if not detection_context:
         return base + "\n\nNo scan has been performed yet. Answer general battlestation questions."
 
+    base += (
+        " You have been given an image of the setup. Always look at the image carefully. "
+        "Describe what you visually see in the setup. "
+        "Cross-check the image against the scan results — call out any components the "
+        "detector missed or incorrectly identified. "
+        "Use specific visual details from the image (colors, layout, visible gear) to "
+        "make your advice more personal and accurate."
+    )
+
     score = detection_context.get("score", "unknown")
     detections = detection_context.get("detections", [])
     detected_classes = [d["class"] for d in detections]
@@ -49,7 +58,20 @@ Use these results when the user asks about their setup.
     return base + "\n\n" + context_block
 
 
-def stream_chat(system_prompt: str, messages_payload: list):
+def stream_chat(system_prompt: str, messages_payload: list, image_url: str | None = None):
+    # On the first message, inject the image as a vision content block
+    if image_url and len(messages_payload) == 1:
+        first = messages_payload[0]
+        messages_payload = [
+            {
+                "role": "user",
+                "content": [
+                    {"type": "image_url", "image_url": {"url": image_url}},
+                    {"type": "text", "text": first["content"]},
+                ],
+            }
+        ]
+
     stream = client.chat.completions.create(
         model=MODEL,
         messages=[{"role": "system", "content": system_prompt}, *messages_payload],
