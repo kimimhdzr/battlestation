@@ -3,7 +3,7 @@ import { Upload, Scan, RotateCcw, FolderOpen, ArrowLeft } from "lucide-react";
 import ErrorModal from "../components/ErrorModal";
 import LoadingBar from "../components/LoadingBar";
 import Button from "../components/Button"; 
-import ChatBot from "../components/ChatBot";
+import ChatBot from "../components/chatbot";
 import { useNavigate } from "react-router-dom";
 
 const BattlestationRater = () => {
