@@ -8,7 +8,7 @@ export default function Footer() {
                     BATTLESTATION RATER
                 </div>
                 <p className="text-[#666] text-[9px] tracking-wide">
-                    &copy; 2024 BattleStation Rater. All rights reserved. <br/>Developed by Group 1 OCC 1 WIF3009 Python for Scientific Computing Session 2025/2026, Universiti Malaya.
+                    &copy; 2026 BattleStation Rater. All rights reserved. <br/>Developed by Group 1 OCC 1 WIF3009 Python for Scientific Computing Session 2025/2026, Universiti Malaya.
                 </p>
             </div>
         </footer>
