@@ -105,3 +105,26 @@ The web application draws bounding boxes and confidence scores over user-uploade
 
 📧 [Tengku Haikal]  
 🔗 [Linkedin]()
+
+---
+
+## 🤖 Changing the AI Chatbot Model
+
+BATTLE-BOT uses [OpenRouter](https://openrouter.ai) to power the AI chat. To change the model, edit line 5 of `backend/app/utils/chat.py`:
+
+```python
+MODEL = "openai/gpt-4o-mini"  # replace with any OpenRouter model ID
+```
+
+Popular options:
+
+| Model | ID |
+|-------|----|
+| GPT-4o mini *(default)* | `openai/gpt-4o-mini` |
+| GPT-4o | `openai/gpt-4o` |
+| Claude 3.5 Haiku | `anthropic/claude-3-5-haiku` |
+| Claude 3.5 Sonnet | `anthropic/claude-3-5-sonnet` |
+| Gemini Flash 2.0 | `google/gemini-flash-2.0` |
+| Llama 3.1 8B *(free)* | `meta-llama/llama-3.1-8b-instruct:free` |
+
+Browse the full list at [openrouter.ai/models](https://openrouter.ai/models).

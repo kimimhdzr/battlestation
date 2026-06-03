@@ -1,17 +1,19 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 
 const LoadingBar = ({ onComplete }) => {
-    const [progress, setProgress] = React.useState(0);
+    const [progress, setProgress] = useState(0);
 
-    React.useEffect(() => {
+    useEffect(() => {
         const timer = setInterval(() => {
             setProgress((prev) => {
                 if (prev >= 100) {
                     clearInterval(timer);
-                    setTimeout(onComplete, 500); 
+                    if (onComplete) {
+                        setTimeout(onComplete, 500);
+                    }
                     return 100;
                 }
-                return prev + 5; 
+                return prev + 5;
             });
         }, 100);
 

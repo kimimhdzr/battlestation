@@ -8,6 +8,7 @@ class Settings(BaseSettings):
     APP_NAME: str = "FastAPI App"
     DEBUG_MODE: bool = False
     SECRET_KEY: str
+    OPENROUTER_API_KEY: str
 
     # This tells Pydantic to read from the .env file
     model_config = SettingsConfigDict(env_file=BASE_DIR / ".env")

@@ -1,8 +1,21 @@
 from fastapi import FastAPI, UploadFile, File, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import StreamingResponse
+from pydantic import BaseModel
+from typing import Optional
 from app.utils.detector import get_image_rating
 import shutil
 import os
+
+
+class ChatMessage(BaseModel):
+    role: str
+    content: str
+
+
+class ChatRequest(BaseModel):
+    messages: list[ChatMessage]
+    detection_context: Optional[dict] = None
 
 app = FastAPI()
 
@@ -41,6 +54,20 @@ async def rate_setup(file: UploadFile = File(...)):
     except Exception as e:
         if os.path.exists(file_path): os.remove(file_path)
         raise HTTPException(status_code=500, detail=str(e))
+
+@app.post("/api/chat")
+async def chat(request: ChatRequest):
+    from app.utils.chat import stream_chat, build_system_prompt
+
+    system_prompt = build_system_prompt(request.detection_context)
+    messages_payload = [{"role": m.role, "content": m.content} for m in request.messages]
+
+    return StreamingResponse(
+        stream_chat(system_prompt, messages_payload),
+        media_type="text/event-stream",
+        headers={"Cache-Control": "no-cache", "X-Accel-Buffering": "no"},
+    )
+
 
 if __name__ == "__main__":
     import uvicorn
